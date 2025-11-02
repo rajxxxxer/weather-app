@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import SignInPage from "./pages/SignInPage";
 import CityDetail from "./pages/CityDetail"; 
-import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
+
 
 export default function App() {
   const { isSignedIn, isLoaded } = useUser();
@@ -33,10 +33,7 @@ export default function App() {
 
     
       <Route path="/sign-in" element={<SignInPage />} />
-      <Route
-        path="/sign-in/sso-callback"
-        element={<AuthenticateWithRedirectCallback />}
-      />
+    
     </Routes>
   );
 }

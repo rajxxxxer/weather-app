@@ -63,13 +63,13 @@ export default function Dashboard() {
       <SearchBar />
 
       {/* 🌤 Favorites Toggle */}
-      <div className="flex justify-center mt-6 mb-6">
+      <div className="flex justify-center mt-7 mb-6">
         <button
           onClick={() => setShowFavorites(!showFavorites)}
-          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+          className={`px-4 py-3 rounded-full text-sm font-semibold transition-all ${
             showFavorites
               ? "bg-blue-600 text-white"
-              : "bg-white border border-blue-400 text-blue-600 hover:bg-blue-100"
+              : "bg-white border border-blue-450 text-blue-600 hover:bg-blue-100"
           }`}
         >
           🌤 {showFavorites ? "Hide My Favorites" : "Show My Favorites"}
