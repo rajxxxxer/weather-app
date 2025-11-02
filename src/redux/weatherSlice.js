@@ -1,11 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchWeather } from "../services/weatherService";
 
+
+const CACHE_DURATION = 60 * 1000;
+
 export const fetchWeatherAsync = createAsyncThunk(
   "weather/fetchWeather",
   async (city, { getState }) => {
+    const state = getState().weather;
     const unit = getState().settings.unit;
+    const cached = state.data[city];
+    const now = Date.now();
+
+   
+    if (cached && cached._timestamp && now - cached._timestamp < CACHE_DURATION) {
+      return cached;
+    }
+
+    
     const data = await fetchWeather(city, unit);
+    data._timestamp = now; 
     return data;
   }
 );
@@ -21,7 +35,7 @@ const weatherSlice = createSlice({
   reducers: {
     addCity: (state, action) => {
       const city = action.payload;
-      // 🔥 add new city to top (remove old duplicate if exists)
+      // 🔥 Add new city to top (remove duplicate)
       state.cities = [city, ...state.cities.filter((c) => c !== city)];
     },
     removeCity: (state, action) => {
@@ -41,9 +55,9 @@ const weatherSlice = createSlice({
       .addCase(fetchWeatherAsync.fulfilled, (state, action) => {
         state.status = "succeeded";
         const city = action.payload.name;
+        // ⏱️ Add timestamped cached data
         state.data[city] = action.payload;
-
-        // 🔥 always put searched city at top
+        // 🧩 Keep city list clean (no duplicate)
         state.cities = [city, ...state.cities.filter((c) => c !== city)];
       })
       .addCase(fetchWeatherAsync.rejected, (state, action) => {
@@ -52,7 +66,6 @@ const weatherSlice = createSlice({
       });
   },
 });
-
 
 export const { addCity, removeCity, clearRecent } = weatherSlice.actions;
 export default weatherSlice.reducer;
